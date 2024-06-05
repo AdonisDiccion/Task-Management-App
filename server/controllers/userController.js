@@ -120,7 +120,7 @@ export async function loginUser(req, res) {
   }
 }
 
-// * Change I Made
+// * Change I Made 2
 
 export async function emailVerification (req, res) {
   try {
