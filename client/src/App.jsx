@@ -23,6 +23,7 @@ function App() {
               <Route path="" element={<HomePage />} />
             </Route>
 
+            Change I made!
 
             {/* ERROR 404 */}
             <Route path="*" element={<ErrorPage />} />
