@@ -7,7 +7,7 @@ import {
 import { sendVerificationEmail } from "../config/emailVerification.js";
 import crypto from  'crypto';
 
-// CREATE USER
+// * Create User Controller
 export async function createUser(req, res) {
   try {
     const { username, email, password } = req.body;
@@ -48,7 +48,7 @@ export async function createUser(req, res) {
     const hashedPass = await hashPassword(password);
 
     // Create user
-    const newUser = await new User({
+    const user = await new User({
       username,
       email,
       password: hashedPass,
@@ -56,17 +56,17 @@ export async function createUser(req, res) {
       verificationToken: crypto.randomBytes(16).toString('hex'),
     }).save();
 
-    console.log("new user:", newUser);
+    console.log("new user:", user);
 
     // Send verification email
-    sendVerificationEmail(newUser.email, newUser.verificationToken);
+    sendVerificationEmail(user.email, user.verificationToken);
     
     // Generate token
-    const token = generateToken(newUser);
+    const token = generateToken(user);
 
     // Send response
     res.status(201).json({
-      user: { newUser },
+      user,
       token,
     });
   } catch (err) {
@@ -75,7 +75,7 @@ export async function createUser(req, res) {
   }
 }
 
-// LOGIN USER
+// * Login User Controller
 export async function loginUser(req, res) {
   try {
     const { usrml, password } = req.body;
@@ -111,6 +111,7 @@ export async function loginUser(req, res) {
         userId: user._id,
         username: user.username,
         email: user.email,
+        isActive: user.isActive
       },
       token,
     });
@@ -120,8 +121,7 @@ export async function loginUser(req, res) {
   }
 }
 
-// * Change I Made 3
-
+// * Email Verification Controller
 export async function emailVerification (req, res) {
   try {
     
@@ -146,7 +146,7 @@ export async function emailVerification (req, res) {
   user.verificationToken = undefined; // clear token
   await user.save();
 
-  res.redirect('http://localhost:5000/tasks');
+  res.redirect('http://localhost:5000/verify-email');
 
 
   } catch (err) {
@@ -154,4 +154,34 @@ export async function emailVerification (req, res) {
     res.status(500).json({message: 'Internal server error'});
   }
 
+}
+
+export async function resendEmailVerification (req, res) {
+  try {
+    const { email } = req.query;
+
+    const user = await User.findOne({email});
+
+    if(!user) {
+      return res.json({message: 'User not found...'});
+    }
+
+    if(user.isActive === true){
+      return res.json({message: 'User already verified'})
+    }
+
+    // Generate new verification token
+    user.verificationToken = crypto.randomBytes(16).toString("hex");
+    await user.save();
+
+    // Send verification email
+    sendVerificationEmail(user.email, user.verificationToken);
+
+    // Send response
+    res.status(200).json({Message: 'Verification Email Sent!'});
+
+  } catch (err) {
+    console.error(`Error sending verification email: ${err}`);
+    res.status(500).json({message: 'Internal server error'});
+  }
 }

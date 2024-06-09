@@ -12,7 +12,7 @@
   }
 
   .button-style {
-    @apply bg-gradient-to-r from-blueGrad via-blueGrad to-violetGrad py-1 px-3 rounded-full text-sm hover:rounded-3xl transition-all duration-300 ease-in-out;
+    @apply bg-gradient-to-r from-blueGrad via-blueGrad to-violetGrad py-1 px-3 rounded-full text-sm hover:rounded-3xl transition-all duration-300 ease-in-out text-white;
   }
 }
 

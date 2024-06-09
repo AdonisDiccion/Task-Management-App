@@ -19,8 +19,8 @@ function App() {
             <Route path="/verify-email" element={<VerifyEmail />} />
             
             {/* PRIVATE */}
-            <Route path="/tasks" element={<PrivateRoute />}>
-              <Route path="" element={<HomePage />} />
+            <Route path="/" element={<PrivateRoute />}>
+              <Route path="tasks" element={<HomePage />} />
             </Route>
 
             Change I made!

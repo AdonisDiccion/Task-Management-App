@@ -55,7 +55,7 @@ export default function LoginForm() {
                         color: '#fff',
                       }
                 }) 
-                navigate('/');
+                navigate('/tasks');
               }
         } catch (err) {
             console.log(err);

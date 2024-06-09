@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../context/auth";
 import { toast } from "react-hot-toast";
 import Modal2 from "../components/Modal2";
 import { MdOutlineRemove, MdOutlineEdit, MdAdd } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
+  // Add context
+  const [auth, setAuth] = useAuth();
   // Add State For Get Tasks
   const [tasks, setTasks] = useState([]);
   // Add State For Updating Task
@@ -193,6 +197,13 @@ export default function HomePage() {
   return (
     
     <>
+    {auth?.user?.isActive === false ? (
+      
+      <div className="fixed top-0 left-1 text-white">
+        Please check your email to verify your account <Link to={import.meta.env.VITE_REACT_APP_GMAIL_LINK} className="cursor-pointer hover: underline text-yellow-600">click here</Link> 
+      </div>
+
+      ) : null}
     {tasks.length === 0 ? (
       <div
       onClick={() => setIsCreateModalVisible(true)}
