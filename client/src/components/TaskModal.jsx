@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Modal2({ children, title , desc, proceedFunction, abortFunction, proceedBtn, abortBtn, visible }) {
+export default function TaskModal({ children, title , desc, proceedFunction, abortFunction, proceedBtn, abortBtn, visible }) {
   if (!visible) return null;
   
     return (
@@ -17,16 +17,16 @@ export default function Modal2({ children, title , desc, proceedFunction, abortF
           {children}
           <div className="flex justify-end">
             <button
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg mr-2 focus:outline-none"
-              onClick={proceedFunction}
-            >
-              {proceedBtn}
-            </button>
-            <button
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg focus:outline-none"
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg mr-2 focus:outline-none"
               onClick={abortFunction} 
             >
               {abortBtn}
+            </button>
+            <button
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg  focus:outline-none"
+              onClick={proceedFunction}
+            >
+              {proceedBtn}
             </button>
           </div>
         </div>

@@ -146,7 +146,7 @@ export async function emailVerification (req, res) {
   user.verificationToken = undefined; // clear token
   await user.save();
 
-  res.redirect('http://localhost:5000/verify-email');
+  res.redirect('http://localhost:5000/login');
 
 
   } catch (err) {
@@ -156,6 +156,7 @@ export async function emailVerification (req, res) {
 
 }
 
+//* Resend email 
 export async function resendEmailVerification (req, res) {
   try {
     const { email } = req.query;

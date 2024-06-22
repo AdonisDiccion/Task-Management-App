@@ -46,8 +46,6 @@ export default function RegisterForm() {
           },
         });
       } else {
-        localStorage.setItem("auth", JSON.stringify(data));
-        setAuth({ ...auth, user: data.user, token: data.token });
         toast.success("Registration Success", {
           style: {
             borderRadius: "10px",

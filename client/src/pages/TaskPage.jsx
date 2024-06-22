@@ -2,18 +2,18 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/auth";
 import { toast } from "react-hot-toast";
-import Modal2 from "../components/Modal2";
+import TaskModal from "../components/TaskModal";
 import { MdOutlineRemove, MdOutlineEdit, MdAdd } from "react-icons/md";
 import { Link } from "react-router-dom";
 
-export default function HomePage() {
-  // Add context
+export default function TaskPage() {
+  //* Add context
   const [auth, setAuth] = useAuth();
-  // Add State For Get Tasks
+  //* Add State For Get Tasks
   const [tasks, setTasks] = useState([]);
-  // Add State For Updating Task
+  //* Add State For Updating Task
   const [selectedTask, setSelectedTask] = useState(null);
-  // Add taskSave
+  //* Add taskSave
   const [updatingTask, setUpdatingTask] = useState({
     uTitle: "",
     uDescription: "",
@@ -23,10 +23,10 @@ export default function HomePage() {
   });
   const [deleteSelectedTask, setDeleteSelectedTask] = useState(null);
 
-  // destructure updating task
+  //* destructure updating task
   const { uTitle, uDescription, uStatus, uPriority, uDue_date } = updatingTask;
 
-  // Initial state
+  //* Initial state
   const initialTaskState = {
     title: "",
     description: "",
@@ -34,43 +34,31 @@ export default function HomePage() {
     priority: "Low",
     due_date: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
   };
-  // Add State For Creating Task
+
+  //* Add State For Creating Task
   const [newTask, setNewTask] = useState(initialTaskState);
+  //* Add State Create For Modal
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  //* Add State Update For Modal
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  //* Add State Delete For Modal
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
   const { title, description, status, priority, due_date } = newTask;
 
-  // input change for create
-  function handleInputChange(e) {
-    const { name, value } = e.target;
-    setNewTask({ ...newTask, [name]: value });
-  }
-
-  // input change for update
-  function handleUpdateInputChange(e) {
-    const { name, value } = e.target;
-    setUpdatingTask({ ...updatingTask, [name]: value });
-  }
-
-  // Add State Create For Modal
-  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-
-  // Add State Update For Modal
-  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
-
-  // Add useEffect
+  //* Add useEffect
   useEffect(() => {
     loadTasks();
   }, []);
-
-  // Add Fetching Of Task
+  
+  
+  //* Add Fetching Of Task
   async function loadTasks() {
     try {
       const { data } = await axios.get("/list-tasks");
       setTasks(data);
       console.log(data);
-
+      
       if (data?.error) {
         console.log(data?.error);
       } else {
@@ -79,17 +67,16 @@ export default function HomePage() {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  // Create Task Function
-  async function createTask(task) {
+  } 
+  //* Create Task Function
+  async function createTask() {
     try {
       const { data } = await axios.post("/create-task", {
         ...newTask,
       });
-
+      
       console.log("data:", data);
-
+      
       if (data?.message) {
         toast.error(data.message, {
           style: {
@@ -99,13 +86,7 @@ export default function HomePage() {
           },
         });
       } else {
-        toast.success(`${data.title} Created`, {
-          style: {
-            borderRadius: "10px",
-            background: "#333",
-            color: "#fff",
-          },
-        });
+        toast.success(`${data.title} Created`, TOAST_OPTIONS);
         loadTasks();
         setIsCreateModalVisible(false);
         setNewTask(initialTaskState);
@@ -114,8 +95,7 @@ export default function HomePage() {
       console.error(err);
     }
   }
-
-  // Update Task function
+  //* Update Task function
   async function updateTask() {
     try {
       const { data } = await axios.put(`/update-task/${selectedTask._id}`,{
@@ -125,9 +105,9 @@ export default function HomePage() {
         priority: uPriority,
         due_date: uDue_date
       });
-
+      
       console.log(data);
-
+      
       if (data?.message) {
         toast.error(data.message, {
           style: {
@@ -137,13 +117,7 @@ export default function HomePage() {
           },
         });
       } else {
-        toast.success(`${data.title} updated`, {
-          style: {
-            borderRadius: "10px",
-            background: "#333",
-            color: "#fff",
-          },
-        });
+        toast.success(`${data.title} updated`, TOAST_OPTIONS);
         setSelectedTask(null);
         setIsUpdateModalVisible(false);
         loadTasks();   
@@ -152,13 +126,12 @@ export default function HomePage() {
       console.error(err);
     }
   }
-
-  // Delete Task
+  //* Delete Task
   async function deleteTask(){
     try {
       const { data } = await axios.delete(`/delete-task/${deleteSelectedTask}`)
       console.log(data)
-
+      
       if (data?.message) {
         toast.error(data.message, {
           style: {
@@ -168,13 +141,7 @@ export default function HomePage() {
           },
         });
       } else {
-        toast.success(`${data.title} deleted`, {
-          style: {
-            borderRadius: "10px",
-            background: "#333",
-            color: "#fff",
-          },
-        });
+        toast.success(`${data.title} deleted`, TOAST_OPTIONS);
         loadTasks();
         setSelectedTask(null);
         setDeleteSelectedTask(null);
@@ -184,14 +151,35 @@ export default function HomePage() {
       console.error(err);
     }
   }
+  
+  //* input change for create
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+    setNewTask({ ...newTask, [name]: value });
+  }
+  //* input change for update
+  function handleUpdateInputChange(e) {
+    const { name, value } = e.target;
+    setUpdatingTask({ ...updatingTask, [name]: value });
+  }
 
-  var options = {
+  //* TOAST_OPTIONS
+  const TOAST_OPTIONS = {
+    style: {
+      borderRadius: "10px",
+      background: "#333",
+      color: "#fff",
+    },
+  };
+
+  //* DATE_OPTIONS
+  const DATE_OPTIONS = {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   };
-
+  
   const inputStyle = "bg-[#23313e] rounded-full p-1 px-4 text-xs w-full";
 
   return (
@@ -257,7 +245,7 @@ export default function HomePage() {
                 <div className="flex">
                   <span className="flex-1">DUE-DATE:</span>{" "}
                   <span>
-                    {new Date(t.due_date).toLocaleDateString("en-US", options)}
+                    {new Date(t.due_date).toLocaleDateString("en-US", DATE_OPTIONS)}
                   </span>
                 </div>
               </div>
@@ -275,7 +263,7 @@ export default function HomePage() {
       
 
       {/* CREATE MODAL */}
-      <Modal2
+      <TaskModal
         title={"CREATE TASK"}
         proceedBtn={"CREATE"}
         proceedFunction={createTask}
@@ -334,10 +322,10 @@ export default function HomePage() {
             onChange={handleInputChange}
           />
         </form>
-      </Modal2>
+      </TaskModal>
 
       {/* UPDATE MODAL */}
-      <Modal2
+      <TaskModal
         title={`UPDATE { ${selectedTask?.title} }`}
         proceedBtn={"UPDATE"}
         proceedFunction={updateTask}
@@ -396,10 +384,10 @@ export default function HomePage() {
             onChange={handleInputChange}
           />
         </form>
-      </Modal2>
+      </TaskModal>
 
       {/* DELETE MODAL */}
-      <Modal2
+      <TaskModal
         title={`DELETE { ${selectedTask?.title} }`}
         proceedBtn={"DELETE"}
         proceedFunction={deleteTask}
@@ -408,7 +396,7 @@ export default function HomePage() {
         visible={isDeleteModalVisible}
       >
 
-      </Modal2>
+      </TaskModal>
     </>
   );
 }

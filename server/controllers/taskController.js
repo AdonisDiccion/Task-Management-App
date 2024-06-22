@@ -64,6 +64,11 @@ export async function updateTask (req,res) {
     const task = await Task.findById(taskID);
     if (!task) { return res.json({ message: 'Task not found!' }) }
 
+    // Ensure title is a string
+    if (typeof title !== 'string' || title.trim() === '') {
+      return res.status(400).json({ message: 'Title must be a valid string' });
+    }
+
     // Update task
     const slug = slugify(title);
     const updateData = {title, slug, description, status, priority, due_date, assignedTo};
@@ -122,7 +127,7 @@ export async function findTask (req, res) {
   }
 }
 
-
+// Delete task
 export async function deleteTask (req, res) {
   try {
     const { taskID } = req.params;

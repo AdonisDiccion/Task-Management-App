@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
+import TaskPage from "./pages/TaskPage.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import PageLayout from "./layout/PageLayout.jsx";
 import { Toaster } from "react-hot-toast";
@@ -20,7 +20,7 @@ function App() {
             
             {/* PRIVATE */}
             <Route path="/" element={<PrivateRoute />}>
-              <Route path="tasks" element={<HomePage />} />
+              <Route path="tasks" element={<TaskPage />} />
             </Route>
 
             Change I made!
